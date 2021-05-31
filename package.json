@@ -1,13 +1,13 @@
 {
   "name": "bxgateway",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Package for connecting to Bloxroute's gateways",
-  "main": "index.ts",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "ts-node src/test.ts"
   },
-  "keywords": [],
+  "keywords": ["bloxroute", "ethereum", "mempool", "mev", "frontrunning"],
   "author": "mempirate",
   "license": "ISC",
   "dependencies": {
