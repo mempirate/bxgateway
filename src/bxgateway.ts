@@ -41,34 +41,38 @@ export interface Transaction {
     chainId: Hex
 }
 
-export class Bxgateway extends EventEmitter {
-    gw: WebSocket
+export class BxgatewayGo extends EventEmitter {
+    private _gw: WebSocket
 
-    constructor(url: string, options?: ClientOptions) {
+    constructor(url: string, authKey: string) {
         super();
-        this.gw = new WebSocket(url, options);
+        this._gw = new WebSocket(url, {
+            headers: {
+                'Authorization': authKey
+            },
+            rejectUnauthorized: false
+        });
 
-        this.gw.on('open', () => {
+        this._gw.on('open', () => {
             this.emit('open');
         });
 
-        this.gw.on('message', (msg: string) => {
+        this._gw.on('message', (msg: string) => {
             const data: NewTransactionResponse = JSON.parse(msg);
             if (data.params) this.emit('message', data.params.result);
         });
 
-        this.gw.on('error', (err) => {
+        this._gw.on('error', (err) => {
             this.emit('error', err);
         });
     }
 
     subscribe(topic: string, options?: StreamOptions) {
-        if (!this.gw.OPEN) throw new Error('Websocket connection to gateway closed');
+        if (!this._gw.OPEN) throw new Error('Websocket connection to gateway closed');
 
-        let string = `{"id": 1, "method": "subscribe", "params": ["newTxs"`
+        let string = `{"id": 1, "method": "subscribe", "params": ["${topic}"`
         let ending = `]}`
 
-        // gw.send(`{"id": 1, "method": "subscribe", "params": ["newTxs", {"include": ["tx_hash", "tx_contents"], "filters": "({to} == '${UNISWAPV2}') AND ({from} == '${LP}')"}]}`)
         if (options) {
             if (options.include) {
                 string += `, {"include": [`;
@@ -102,6 +106,6 @@ export class Bxgateway extends EventEmitter {
             string += ending;
         }
 
-        this.gw.send(string);
+        this._gw.send(string);
     }
 }

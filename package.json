@@ -1,13 +1,14 @@
 {
   "name": "bxgateway",
   "version": "0.0.1",
-  "description": "",
+  "description": "Package for connecting to Bloxroute's gateways",
   "main": "index.ts",
+  "types": "index.d.ts",
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "test": "ts-node src/test.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "mempirate",
   "license": "ISC",
   "dependencies": {
     "ts-node": "^10.0.0",
