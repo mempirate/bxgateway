@@ -1,4 +1,4 @@
-import WebSocket, { ClientOptions } from 'ws';
+import WebSocket from 'ws';
 import { EventEmitter } from 'events';
 
 type Hex = string;
@@ -59,9 +59,12 @@ export class BxgatewayGo extends EventEmitter {
             rejectUnauthorized: false
         });
 
+        // Pass on
         this._gw.on('open', () => this.emit('open'));
+        this._gw.on('close', () => this.emit('close'));
         this._gw.on('error', (err) => this.emit('error', err));
 
+        // Modify default messages to be more useful
         this._gw.on('message', (msg: string) => {
             const data: NewTransactionResponse = JSON.parse(msg);
             if (data.params) this.emit('message', data.params.result);
@@ -80,8 +83,8 @@ export class BxgatewayGo extends EventEmitter {
         }
 
         if (options) {
-
             let params: any = {};
+
             if (options.include) {
                 params.include = options.include;
             }
@@ -100,12 +103,16 @@ export class BxgatewayGo extends EventEmitter {
                     filter += `({from} == '${options.filters.from}')`;
                 }
 
-                params.filter = filter;
+                params.filters = filter;
             }
 
             req.params.push(params);
         }
 
         this._gw.send(JSON.stringify(req));
+    }
+
+    close() {
+        this._gw.close();
     }
 }
