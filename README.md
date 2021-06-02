@@ -1,4 +1,4 @@
-# Bxgateway-js
+# Bxgateway
 
 ## Usage
 ```js
@@ -24,3 +24,8 @@ gw.on('message', (msg) => {
     console.log(msg);
 });
 ```
+
+## To do
+* [ ] Change string builder
+* [ ] Implement other endpoints (mev, blxr_tx)
+* [ ] Add Python gateway

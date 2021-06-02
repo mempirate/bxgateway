@@ -13,6 +13,17 @@ export interface StreamOptions {
     include?: string[]
 }
 
+export interface Request {
+    id: number,
+    method: string,
+    params: any[],
+}
+
+export interface RequestParams {
+    include?: string[],
+    filters?: string,
+}
+
 export interface NewTransactionResponse {
     method: string,
     params?: {
@@ -53,59 +64,54 @@ export class BxgatewayGo extends EventEmitter {
             rejectUnauthorized: false
         });
 
-        this._gw.on('open', () => {
-            this.emit('open');
-        });
+        this._gw.on('open', () => this.emit('open'));
+        this._gw.on('error', (err) => this.emit('error', err));
 
         this._gw.on('message', (msg: string) => {
             const data: NewTransactionResponse = JSON.parse(msg);
             if (data.params) this.emit('message', data.params.result);
-        });
-
-        this._gw.on('error', (err) => {
-            this.emit('error', err);
         });
     }
 
     subscribe(topic: string, options?: StreamOptions) {
         if (!this._gw.OPEN) throw new Error('Websocket connection to gateway closed');
 
-        let string = `{"id": 1, "method": "subscribe", "params": ["${topic}"`
-        let ending = `]}`
+        let req: Request = {
+            id: 1,
+            method: "subscribe",
+            params: [
+                topic,
+            ]
+        }
 
         if (options) {
+
+            let params: any = {};
             if (options.include) {
-                string += `, {"include": [`;
-                for (let i = 0; i < options.include.length; i++) {
-                    if (options.include.length - 1 === i) {
-                        string += `"${options.include[i]}"`;
-                    } else {
-                        string += `"${options.include[i]}", `;
-                    }
-                }
-                string += `], `;
-                ending = `}` + ending;
+                params.include = options.include;
             }
 
             if (options.filters) {
-                string += `"filters": `;
-                ending = `"` + ending;
+                let filter = ``;
                 if (options.filters.to) {
-                    string += `"({to} == '${options.filters.to}') `;
+                    filter += `({to} == '${options.filters.to}')`;
                 }
 
                 if (options.filters.method) {
-                    string += options.filters.method.toUpperCase();
+                    filter += ` ${options.filters.method.toUpperCase()} `;
                 }
 
                 if (options.filters.from) {
-                    string += ` ({from} == '${options.filters.from}')`;
+                    filter += `({from} == '${options.filters.from}')`;
                 }
+
+                params.filter = filter;
             }
 
-            string += ending;
+            req.params.push(params);
         }
 
-        this._gw.send(string);
+        console.log(JSON.stringify(req));
+        this._gw.send(JSON.stringify(req));
     }
 }
