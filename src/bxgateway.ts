@@ -19,11 +19,6 @@ export interface Request {
     params: any[],
 }
 
-export interface RequestParams {
-    include?: string[],
-    filters?: string,
-}
-
 export interface NewTransactionResponse {
     method: string,
     params?: {
@@ -111,7 +106,6 @@ export class BxgatewayGo extends EventEmitter {
             req.params.push(params);
         }
 
-        console.log(JSON.stringify(req));
         this._gw.send(JSON.stringify(req));
     }
 }
