@@ -4,7 +4,7 @@ import { Response, Request, Transaction, StreamOptions } from './interfaces';
 
 
 export class BxgatewayGo extends EventEmitter {
-    private _gw: WebSocket
+    private readonly _gw: WebSocket
 
     constructor(url: string, authKey: string) {
         super();
@@ -36,7 +36,7 @@ export class BxgatewayGo extends EventEmitter {
             params: [
                 topic,
             ]
-        }
+        };
 
         if (options) {
             let params: any = {};

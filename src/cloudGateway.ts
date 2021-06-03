@@ -4,25 +4,40 @@ import fs from 'fs';
 
 import { Response, Request, StreamOptions } from './interfaces';
 
-export interface CertificateOptions {
-    certPath: string,
-    keyPath: string
+export interface AuthOptions {
+    certPath?: string,
+    keyPath?: string,
+    Authorization?: string
 }
 
 export class CloudGateway extends EventEmitter {
-    private readonly _gw;
+    private readonly _gw: WebSocket;
 
-    constructor(url: string, certOpts: CertificateOptions) {
+    constructor(url: string, authOpts?: AuthOptions) {
         super();
 
-        this._gw = new WebSocket(
-            url,
-            {
-                cert: fs.readFileSync(certOpts.certPath),
-                key: fs.readFileSync(certOpts.keyPath),
-                rejectUnauthorized: false
-            }
-        );
+        if (authOpts.Authorization) {
+            // Non-enterprise gateway
+            this._gw = new WebSocket(
+                url,
+                {
+                    headers: {
+                        'Authorization': authOpts.Authorization
+                    },
+                    rejectUnauthorized: false
+                }
+            );
+        } else {
+            // Enterprise gateway
+            this._gw = new WebSocket(
+                url,
+                {
+                    cert: fs.readFileSync(authOpts.certPath),
+                    key: fs.readFileSync(authOpts.keyPath),
+                    rejectUnauthorized: false
+                }
+            );
+        }
 
         // Pass on
         this._gw.on('open', () => this.emit('open'));

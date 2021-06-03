@@ -12,12 +12,8 @@ const gw = new BxgatewayGo(
 );
 
 // Filter for watching all transactions to Uniswap V2 & V3 routers.
-// To build the filter we use rudimentary chaining using the builder
-// pattern. Expect this to change to something more elegant like in Chai.
-const filter = Filter
-    .to('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D')
-    .or()
-    .to('0xE592427A0AEce92De3Edee1F18E0157C05861564')
+const filter = new Filter()
+    .to('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D').or.to('0xE592427A0AEce92De3Edee1F18E0157C05861564')
 
 gw.on('open', () => {
     gw.subscribe('newTxs', {
