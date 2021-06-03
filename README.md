@@ -39,6 +39,8 @@ gw.on('message', (msg) => {
 
 ### Cloud gateway (Enterprise)
 ```js
+import { CloudGateway } from 'bxgateway';
+
 const cloudGw = new CloudGateway(
     'wss://eth.feed.blxrbdn.com:28333',
     {
