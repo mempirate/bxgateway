@@ -5,11 +5,7 @@ type Hex = string;
 type Address = string;
 
 export interface StreamOptions {
-    filters?: {
-        method?: string,
-        to?: string,
-        from?: string,
-    },
+    filters?: string,
     include?: string[]
 }
 
@@ -90,20 +86,7 @@ export class BxgatewayGo extends EventEmitter {
             }
 
             if (options.filters) {
-                let filter = ``;
-                if (options.filters.to) {
-                    filter += `({to} == '${options.filters.to}')`;
-                }
-
-                if (options.filters.method) {
-                    filter += ` ${options.filters.method.toUpperCase()} `;
-                }
-
-                if (options.filters.from) {
-                    filter += `({from} == '${options.filters.from}')`;
-                }
-
-                params.filters = filter;
+                params.filters = options.filters;
             }
 
             req.params.push(params);
