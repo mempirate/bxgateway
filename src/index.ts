@@ -1,2 +1,2 @@
 export * from './bxgateway';
-export * from './filterBuilder';
+export * from './filter';

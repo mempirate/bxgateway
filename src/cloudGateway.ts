@@ -1,19 +1,28 @@
-import WebSocket from 'ws';
 import { EventEmitter } from 'events';
-import { Response, Request, Transaction, StreamOptions } from './interfaces';
+import WebSocket from 'ws';
+import fs from 'fs';
 
+import { Response, Request, StreamOptions } from './interfaces';
 
-export class BxgatewayGo extends EventEmitter {
-    private _gw: WebSocket
+export interface CertificateOptions {
+    certPath: string,
+    keyPath: string
+}
 
-    constructor(url: string, authKey: string) {
+export class CloudGateway extends EventEmitter {
+    private readonly _gw;
+
+    constructor(url: string, certOpts: CertificateOptions) {
         super();
-        this._gw = new WebSocket(url, {
-            headers: {
-                'Authorization': authKey
-            },
-            rejectUnauthorized: false
-        });
+
+        this._gw = new WebSocket(
+            url,
+            {
+                cert: fs.readFileSync(certOpts.certPath),
+                key: fs.readFileSync(certOpts.keyPath),
+                rejectUnauthorized: false
+            }
+        );
 
         // Pass on
         this._gw.on('open', () => this.emit('open'));
