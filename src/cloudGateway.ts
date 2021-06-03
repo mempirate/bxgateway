@@ -7,7 +7,7 @@ import { Response, Request, StreamOptions } from './interfaces';
 export interface AuthOptions {
     certPath?: string,
     keyPath?: string,
-    Authorization?: string
+    authorization?: string
 }
 
 export class CloudGateway extends EventEmitter {
@@ -16,13 +16,13 @@ export class CloudGateway extends EventEmitter {
     constructor(url: string, authOpts?: AuthOptions) {
         super();
 
-        if (authOpts.Authorization) {
+        if (authOpts.authorization) {
             // Non-enterprise gateway
             this._gw = new WebSocket(
                 url,
                 {
                     headers: {
-                        'Authorization': authOpts.Authorization
+                        'Authorization': authOpts.authorization
                     },
                     rejectUnauthorized: false
                 }

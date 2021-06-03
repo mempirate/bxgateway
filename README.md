@@ -33,6 +33,26 @@ gw.on('message', (msg) => {
 });
 ```
 
+### Cloud gateway (Non-enterprise)
+```js
+import { CloudGateway } from 'bxgateway';
+
+const cloudGw = new CloudGateway(
+    'wss://api.blxrbdn.com/ws',
+    {
+        authorization: 'YOUR_API_KEY'
+    }
+);
+
+cloudGw.on('open', () => {
+    cloudGw.subscribe('newBlocks', {
+        include: ['header.number']
+    });
+});
+
+cloudGw.on('message', (msg) => console.log(msg));
+```
+
 ### Cloud gateway (Enterprise)
 ```js
 import { CloudGateway } from 'bxgateway';
