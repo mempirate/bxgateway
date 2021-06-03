@@ -1,38 +1,38 @@
-export abstract class Filter {
-    private static _filter: string = '';
-    private static _valid: boolean;
+export class Filter {
+    private _filter: string = '';
+    private _valid: boolean = false;
 
-    static to(address: string) {
+    to(address: string) {
         this._filter += `({to} == '${address}')`;
         this._valid = true;
         return this;
     }
 
-    static from(address: string) {
+    from(address: string) {
         this._filter += `({from} == '${address}')`;
         this._valid = true;
         return this;
     }
 
-    static method(methodId: string) {
+    method(methodId: string) {
         this._filter += `({methodId} == '${methodId}')`;
         this._valid = true;
         return this;
     }
 
-    static and() {
+    get and() {
         this._filter += ` AND `;
         this._valid = false;
         return this;
     }
 
-    static or() {
+    get or() {
         this._filter += ` OR `;
         this._valid = false;
         return this;
     }
 
-    static build() {
+    build() {
         if (!this._valid) throw new Error('Invalid filter');
         return this._filter;
     }
