@@ -38,19 +38,7 @@ export class BxgatewayGo extends EventEmitter {
             ]
         };
 
-        if (options) {
-            let params: any = {};
-
-            if (options.include) {
-                params.include = options.include;
-            }
-
-            if (options.filters) {
-                params.filters = options.filters;
-            }
-
-            req.params.push(params);
-        }
+        if (options) req.params.push(options);
 
         this._gw.send(JSON.stringify(req));
     }
