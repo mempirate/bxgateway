@@ -29,14 +29,13 @@ export class BxgatewayGo extends BxgatewayBase {
         if (topic === 'newBlocks') throw new Error('newBlocks subscription not implemented in bxgateway-go')
 
         let req: Request = {
-            id: 1,
+            id: '1',
             method: "subscribe",
             params: [
                 topic,
+                options
             ]
         };
-
-        if (options) req.params.push(options);
 
         this._gw.send(JSON.stringify(req));
     }

@@ -68,10 +68,10 @@ export class CloudGateway extends BxgatewayBase {
 
         const req: Request = {
             method: 'blxr_simulate_bundle',
-            id: 1,
+            id: '1',
             params: {
                 transaction: bundle,
-                block_number: blockNumber.toString(16),
+                block_number: '0x' + blockNumber.toString(16),
                 state_block_number: options?.stateBlockNumber,
                 timestamp: options?.timestamp
             }
@@ -97,10 +97,10 @@ export class CloudGateway extends BxgatewayBase {
 
         const req: Request = {
             method: 'blxr_submit_bundle',
-            id: 1,
+            id: '1',
             params: {
                 transaction: bundle,
-                block_number: blockNumber.toString(16),
+                block_number: '0x' + blockNumber.toString(16),
                 min_timestamp: options?.minTimestamp,
                 max_timestamp: options?.maxTimestamp
             }

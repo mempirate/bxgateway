@@ -9,20 +9,30 @@ export default class BxgatewayBase extends EventEmitter {
         if (!this._gw.OPEN) throw new Error('Websocket connection to gateway closed');
 
         let req: Request = {
-            id: 1,
+            id: '1',
             method: "subscribe",
             params: [
                 topic,
+                options
             ]
         };
-
-        if (options) req.params.push(options);
 
         this._gw.send(JSON.stringify(req));
     }
 
     sendTransaction(signedTransaction: string) {
-        this._gw.send(`{"jsonrpc": "2.0", "id": 1, "method": "blxr_tx", "params": {"transaction": "${signedTransaction}"}}`);
+        if (!this._gw.OPEN) throw new Error('Websocket connection to gateway closed');
+
+        signedTransaction = signedTransaction.startsWith('0x') ? signedTransaction.slice(2) : signedTransaction;
+
+        let req: Request = {
+            method: 'blxr_tx',
+            id: '1',
+            params: {
+                transaction: signedTransaction
+            }
+        }
+        this._gw.send(JSON.stringify(req));
     }
 
     close() {

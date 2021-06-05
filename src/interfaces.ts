@@ -7,7 +7,7 @@ export interface StreamOptions {
 }
 
 export interface Request {
-    id: number,
+    id: string,
     method: string,
     params: any[] | any,
 }
