@@ -39,3 +39,5 @@ export interface Transaction {
     to: Address,
     chainId: Hex
 }
+
+export type StreamTopic = 'newTxs' | 'pendingTxs' | 'newBlocks';

@@ -1,7 +1,7 @@
-import { EventEmitter } from 'events';
 import WebSocket from 'ws';
 import fs from 'fs';
 
+import BxgatewayBase from './bxgatewayBase';
 import { Response, Request, StreamOptions } from './interfaces';
 
 export interface AuthOptions {
@@ -10,10 +10,8 @@ export interface AuthOptions {
     authorization?: string
 }
 
-export class CloudGateway extends EventEmitter {
-    private readonly _gw: WebSocket;
-
-    constructor(url: string, authOpts?: AuthOptions) {
+export class CloudGateway extends BxgatewayBase {
+    constructor(url: string, authOpts: AuthOptions) {
         super();
 
         if (authOpts.authorization) {
@@ -32,8 +30,8 @@ export class CloudGateway extends EventEmitter {
             this._gw = new WebSocket(
                 url,
                 {
-                    cert: fs.readFileSync(authOpts.certPath),
-                    key: fs.readFileSync(authOpts.keyPath),
+                    cert: fs.readFileSync(authOpts.certPath!),
+                    key: fs.readFileSync(authOpts.keyPath!),
                     rejectUnauthorized: false
                 }
             );
@@ -49,25 +47,5 @@ export class CloudGateway extends EventEmitter {
             const data: Response = JSON.parse(msg);
             if (data.params) this.emit('message', data.params.result);
         });
-    }
-
-    subscribe(topic: string, options?: StreamOptions) {
-        if (!this._gw.OPEN) throw new Error('Websocket connection to gateway closed');
-
-        let req: Request = {
-            id: 1,
-            method: "subscribe",
-            params: [
-                topic,
-            ]
-        }
-
-        if (options) req.params.push(options);
-
-        this._gw.send(JSON.stringify(req));
-    }
-
-    close() {
-        this._gw.close();
     }
 }

@@ -1,11 +1,8 @@
 import WebSocket from 'ws';
-import { EventEmitter } from 'events';
-import { Response, Request, Transaction, StreamOptions } from './interfaces';
+import { Response, Request, StreamOptions, StreamTopic } from './interfaces';
+import BxgatewayBase from './bxgatewayBase';
 
-
-export class BxgatewayGo extends EventEmitter {
-    private readonly _gw: WebSocket
-
+export class BxgatewayGo extends BxgatewayBase {
     constructor(url: string, authKey: string) {
         super();
         this._gw = new WebSocket(url, {
@@ -27,8 +24,9 @@ export class BxgatewayGo extends EventEmitter {
         });
     }
 
-    subscribe(topic: string, options?: StreamOptions) {
+    subscribe(topic: StreamTopic, options?: StreamOptions) {
         if (!this._gw.OPEN) throw new Error('Websocket connection to gateway closed');
+        if (topic === 'newBlocks') throw new Error('newBlocks subscription not implemented in bxgateway-go')
 
         let req: Request = {
             id: 1,
@@ -41,9 +39,5 @@ export class BxgatewayGo extends EventEmitter {
         if (options) req.params.push(options);
 
         this._gw.send(JSON.stringify(req));
-    }
-
-    close() {
-        this._gw.close();
     }
 }
