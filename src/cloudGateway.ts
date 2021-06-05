@@ -77,8 +77,6 @@ export class CloudGateway extends BxgatewayBase {
             }
         }
 
-        console.log(JSON.stringify(req));
-
         return (await axios.post(this._url,
             JSON.stringify(req),
             {

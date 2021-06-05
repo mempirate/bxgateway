@@ -3,7 +3,7 @@ export type Address = string;
 
 export interface StreamOptions {
     filters?: string,
-    include?: string[]
+    include?: Includable[]
 }
 
 export interface Request {
@@ -47,6 +47,18 @@ export interface AuthOptions {
     keyPath?: string,
     authorization?: string
 }
+
+export type Includable = 
+    // newBlocks
+    'hash' | 'header' | 'header.number' | 'header.parentHash' | 'header.sha3Uncles' | 'header.miner' |
+    'header.stateRoot' | 'header.transactionsRoot' | 'header.receiptsRoot' | 'header.logsBloom' |
+    'header.difficulty' | 'header.gasLimit' | 'header.gasUsed' | 'header.timestamp' | 'header.extraData' |
+    'header.mixHash' | 'header.nonce' | 'transactions' | 
+    // newTxs
+    'tx_hash' | 'tx_contents' | 'tx_contents.input' | 'tx_contents.v' | 'tx_contents.r' | 'tx_contents.s' |
+    'tx_contents.from' | 'tx_contents.to' | 'tx_contents.value' | 'tx_contents.nonce' | 'tx_contents.gas' |
+    'tx_contents.gas_price'
+
 
 export type BlockAlias = 'latest' | 'pending';
 
