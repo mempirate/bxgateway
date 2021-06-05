@@ -1,21 +1,34 @@
 import WebSocket from 'ws';
+import { Agent } from 'https'
+import axios from 'axios';
 import fs from 'fs';
 
 import BxgatewayBase from './bxgatewayBase';
-import { Response, Request, StreamOptions } from './interfaces';
-
-export interface AuthOptions {
-    certPath?: string,
-    keyPath?: string,
-    authorization?: string
-}
+import { Response, Request, AuthOptions, BundleSimulationOptions, BundleSubmissionOptions } from './interfaces';
 
 export class CloudGateway extends BxgatewayBase {
+    private _http: boolean = false;
+    private _httpsAgent: Agent;
+    private _url: string;
+    private readonly _authorizationKey: string;
+
     constructor(url: string, authOpts: AuthOptions) {
         super();
 
+        this._url = url;
+
         if (authOpts.authorization) {
-            // Non-enterprise gateway
+            if (url.includes('http')) {
+                // Not a websocket gateway
+                this._authorizationKey = authOpts.authorization;
+                this._http = true;
+                this._httpsAgent = new Agent({
+                    rejectUnauthorized: false
+                });
+                return;
+            }
+
+            // Non-enterprise gateway or MEV endpoint
             this._gw = new WebSocket(
                 url,
                 {
@@ -47,5 +60,61 @@ export class CloudGateway extends BxgatewayBase {
             const data: Response = JSON.parse(msg);
             if (data.params) this.emit('message', data.params.result);
         });
+    }
+
+    async simulateBundle(bundle: string[], blockNumber: number, options?: BundleSimulationOptions): Promise<any> {
+        if (!this._http) throw new Error(`Wrong endpoint: ${this._url} (not HTTP)`)
+        bundle = bundle.map(tx => tx.startsWith('0x') ? tx.slice(2) : tx);
+
+        const req: Request = {
+            method: 'blxr_simulate_bundle',
+            id: 1,
+            params: {
+                transaction: bundle,
+                block_number: blockNumber.toString(16),
+                state_block_number: options?.stateBlockNumber,
+                timestamp: options?.timestamp
+            }
+        }
+
+        console.log(JSON.stringify(req));
+
+        return (await axios.post(this._url,
+            JSON.stringify(req),
+            {
+                headers: {
+                    'Authorization': this._authorizationKey,
+                    'Content-Type': 'application/json'
+                },
+                httpsAgent: this._httpsAgent,
+            }
+        )).data;
+    }
+
+    async submitBundle(bundle: string[], blockNumber: number, options?: BundleSubmissionOptions): Promise<any> {
+        if (!this._http) throw new Error(`Wrong endpoint: ${this._url} (not HTTP)`)
+        bundle = bundle.map(tx => tx.startsWith('0x') ? tx.slice(2) : tx);
+
+        const req: Request = {
+            method: 'blxr_submit_bundle',
+            id: 1,
+            params: {
+                transaction: bundle,
+                block_number: blockNumber.toString(16),
+                min_timestamp: options?.minTimestamp,
+                max_timestamp: options?.maxTimestamp
+            }
+        }
+
+        return (await axios.post(this._url,
+            JSON.stringify(req),
+            {
+                headers: {
+                    'Authorization': this._authorizationKey,
+                    'Content-Type': 'application/json'
+                },
+                httpsAgent: this._httpsAgent,
+            }
+        )).data;
     }
 }

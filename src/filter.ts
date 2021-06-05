@@ -2,6 +2,11 @@ export class Filter {
     private _filter: string = '';
     private _valid: boolean = false;
 
+    build() {
+        if (!this._valid) throw new Error('Invalid filter');
+        return this._filter;
+    }
+
     to(address: string) {
         this._filter += `({to} == '${address}')`;
         this._valid = true;
@@ -30,10 +35,5 @@ export class Filter {
         this._filter += ` OR `;
         this._valid = false;
         return this;
-    }
-
-    build() {
-        if (!this._valid) throw new Error('Invalid filter');
-        return this._filter;
     }
 }

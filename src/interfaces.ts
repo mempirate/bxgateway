@@ -9,7 +9,7 @@ export interface StreamOptions {
 export interface Request {
     id: number,
     method: string,
-    params: any[],
+    params: any[] | any,
 }
 
 export interface Response {
@@ -41,3 +41,21 @@ export interface Transaction {
 }
 
 export type StreamTopic = 'newTxs' | 'pendingTxs' | 'newBlocks';
+
+export interface AuthOptions {
+    certPath?: string,
+    keyPath?: string,
+    authorization?: string
+}
+
+export type BlockAlias = 'latest' | 'pending';
+
+export interface BundleSimulationOptions {
+    stateBlockNumber?: number | BlockAlias,
+    timestamp?: number
+}
+
+export interface BundleSubmissionOptions {
+    minTimestamp?: number,
+    maxTimestamp?: number
+}
