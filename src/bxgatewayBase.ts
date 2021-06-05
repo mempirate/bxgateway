@@ -10,7 +10,7 @@ export default class BxgatewayBase extends EventEmitter {
 
         let req: Request = {
             id: '1',
-            method: "subscribe",
+            method: 'subscribe',
             params: [
                 topic,
                 options

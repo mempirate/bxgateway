@@ -1,8 +1,10 @@
 # Bxgateway
 
 ## Usage
-
-### Hosted light gateway (bxgateway-go)
+```
+npm install bxgateway
+```
+### Bxgateway-go
 ```js
 import { BxgatewayGo, Filter } from 'bxgateway';
 
@@ -33,7 +35,7 @@ gw.on('message', (msg) => {
 });
 ```
 
-### Cloud gateway (Non-enterprise)
+### Cloud gateway
 ```js
 import { CloudGateway } from 'bxgateway';
 
@@ -72,7 +74,3 @@ cloudGw.on('open', () => {
 
 cloudGw.on('message', (msg) => console.log(msg));
 ```
-
-## To do
-* [ ] Implement other endpoints (mev, blxr_tx)
-* [ ] Add Python gateway
