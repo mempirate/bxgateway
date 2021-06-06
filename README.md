@@ -4,17 +4,17 @@
 ```
 npm install bxgateway
 ```
-### Bxgateway-go
+### Light Gateway
 ```js
-import { BxgatewayGo, Filter } from 'bxgateway';
+import { LightGateway } from 'bxgateway';
 
-const gw = new BxgatewayGo(
+const gw = new LightGateway(
     'ws://127.0.0.1:28334/ws',
     'YOUR_API_KEY'
 );
 ```
 
-### Cloud gateway
+### Cloud Gateway
 ```js
 import { CloudGateway } from 'bxgateway';
 
@@ -23,7 +23,7 @@ const cloudGw = new CloudGateway('wss://api.blxrbdn.com/ws', {
 });
 ```
 
-### Cloud gateway (Enterprise)
+### Cloud Gateway (Enterprise)
 ```js
 import { CloudGateway } from 'bxgateway';
 
@@ -36,6 +36,7 @@ const cloudGw = new CloudGateway('wss://eth.feed.blxrbdn.com:28333', {
 ### Streams
 `newTxs`, `pendingTxs` and `newBlocks` streams are supported. The `newBlocks` stream does not work on bxgateway-go.
 ```js
+import { Filter } from 'bxgateway';
 // Filter for watching all transactions to Uniswap V2 & V3 routers.
 const filter = new Filter()
     .to('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D').or.to('0xE592427A0AEce92De3Edee1F18E0157C05861564');
@@ -58,6 +59,7 @@ gw.on('message', (msg) => {
 Example response:
 ```js
 {
+  txHash: '0xe0144f121d38beab28b60dceac6194fed161e4d9f2a2748677535c467179ed7e',
   txContents: {
     type: '0x0',
     nonce: '0x24',
@@ -84,7 +86,7 @@ const mevGw = new CloudGateway('https://mev.api.blxrbdn.com', {
 const targetBlock = 12575306;
 
 // Raw transactions can be 0x prefixed or not
-mevGw.simulateBundle(['<raw_transaction_1>', '<raw_transaction_2>'], targetBlock);
+mevGw.simulateBundle(['0xf902ab4d850280bff9a3830...', 'f902ab4d850280bff9a38302d39394e59242...'], targetBlock);
 
-mevGw.submitBundle(['<raw_transaction_1>', '<raw_transaction_2>'], targetBlock);
+mevGw.submitBundle(['0xf902ab4d850280bff9a3830...', 'f902ab4d850280bff9a38302d39394e59242...'], targetBlock);
 ```

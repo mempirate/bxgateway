@@ -2,7 +2,7 @@ import WebSocket from 'ws';
 import { Response, Request, StreamOptions, StreamTopic } from './interfaces';
 import BxgatewayBase from './bxgatewayBase';
 
-export class BxgatewayGo extends BxgatewayBase {
+export class LightGateway extends BxgatewayBase {
     constructor(url: string, authKey: string) {
         super();
         this._gw = new WebSocket(url, {
