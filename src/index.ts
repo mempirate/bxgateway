@@ -1,3 +1,3 @@
-export * from './bxgateway';
+export * from './lightGateway';
 export * from './cloudGateway';
 export * from './filter';

@@ -21,6 +21,7 @@ export class LightGateway extends BxgatewayBase {
         this._gw.on('message', (msg: string) => {
             const data: Response = JSON.parse(msg);
             if (data.params) this.emit('message', data.params.result);
+            if (data.result) this.emit('message', data.result);
         });
     }
 
@@ -29,7 +30,7 @@ export class LightGateway extends BxgatewayBase {
         if (topic === 'newBlocks') throw new Error('newBlocks subscription not implemented in bxgateway-go')
 
         let req: Request = {
-            id: '1',
+            id: 1,
             method: "subscribe",
             params: [
                 topic,

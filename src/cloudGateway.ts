@@ -59,6 +59,7 @@ export class CloudGateway extends BxgatewayBase {
         this._gw.on('message', (msg: string) => {
             const data: Response = JSON.parse(msg);
             if (data.params) this.emit('message', data.params.result);
+            if (data.result) this.emit('message', data.result);
         });
     }
 
@@ -68,7 +69,7 @@ export class CloudGateway extends BxgatewayBase {
 
         const req: Request = {
             method: 'blxr_simulate_bundle',
-            id: '1',
+            id: 1,
             params: {
                 transaction: bundle,
                 block_number: '0x' + blockNumber.toString(16),
@@ -95,7 +96,7 @@ export class CloudGateway extends BxgatewayBase {
 
         const req: Request = {
             method: 'blxr_submit_bundle',
-            id: '1',
+            id: 1,
             params: {
                 transaction: bundle,
                 block_number: '0x' + blockNumber.toString(16),

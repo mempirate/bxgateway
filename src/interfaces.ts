@@ -7,13 +7,15 @@ export interface StreamOptions {
 }
 
 export interface Request {
-    id: string,
+    jsonrpc?: string,
+    id: number,
     method: string,
     params: any[] | any,
 }
 
 export interface Response {
     method: string,
+    result?: any,
     params?: {
         subscription: string,
         result: {
