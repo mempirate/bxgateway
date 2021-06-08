@@ -55,7 +55,7 @@ export type Includable =
     'hash' | 'header' | 'header.number' | 'header.parentHash' | 'header.sha3Uncles' | 'header.miner' |
     'header.stateRoot' | 'header.transactionsRoot' | 'header.receiptsRoot' | 'header.logsBloom' |
     'header.difficulty' | 'header.gasLimit' | 'header.gasUsed' | 'header.timestamp' | 'header.extraData' |
-    'header.mixHash' | 'header.nonce' | 'transactions' | 
+    'header.mixHash' | 'header.nonce' | 'transactions' | 'uncles' |
     // newTxs
     'tx_hash' | 'tx_contents' | 'tx_contents.input' | 'tx_contents.v' | 'tx_contents.r' | 'tx_contents.s' |
     'tx_contents.from' | 'tx_contents.to' | 'tx_contents.value' | 'tx_contents.nonce' | 'tx_contents.gas' |
