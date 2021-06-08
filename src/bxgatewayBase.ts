@@ -32,7 +32,7 @@ export default class BxgatewayBase extends EventEmitter {
                 transaction: signedTransaction
             }
         }
-        console.log(JSON.stringify(req));
+
         this._gw.send(JSON.stringify(req));
     }
 
