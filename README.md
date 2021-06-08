@@ -1,10 +1,19 @@
 # Bxgateway
 
 ## Usage
+Installation:
 ```
 npm install bxgateway
 ```
-### Light Gateway
+Bloxroute offers many different products, and I separate most of them into
+different classes. Currently implemented are:
+* Light Gateway (Requires Enterprise plan)
+* Cloud Gateways (Both Enterprise and Non-enterprise)
+
+The Python Gateway is not implemented yet, but it will be soon.
+
+### Connecting
+#### Light Gateway
 ```js
 import { LightGateway } from 'bxgateway';
 
@@ -14,7 +23,7 @@ const gw = new LightGateway(
 );
 ```
 
-### Cloud Gateway
+#### Cloud Gateway
 ```js
 import { CloudGateway } from 'bxgateway';
 
@@ -23,7 +32,7 @@ const cloudGw = new CloudGateway('wss://api.blxrbdn.com/ws', {
 });
 ```
 
-### Cloud Gateway (Enterprise)
+#### Cloud Gateway (Enterprise)
 ```js
 import { CloudGateway } from 'bxgateway';
 
@@ -33,27 +42,57 @@ const cloudGw = new CloudGateway('wss://eth.feed.blxrbdn.com:28333', {
 });
 ```
 
-### Streams
-`newTxs`, `pendingTxs` and `newBlocks` streams are supported. The `newBlocks` stream does not work on bxgateway-go.
+### Sending transactions
+We can send transactions like this:
+```js
+gw.sendTransaction('0xf902ab4d850280bff9a3830...');
+```
+`sendTransaction` accepts a signed transaction (0x-prefixed or not), and submits it to the `blxr_tx` endpoint
+of the connection. The result will be emitted as a `message`:
+```js
+{ result: '0xfae59fe92511621e6be6932f2aa5232a8371d25779558824c7c2ccae72eb10fb' }
+```
+
+### Working with streams
+`newTxs`, `pendingTxs` and `newBlocks` streams are supported (the rest are WIP). The `newBlocks` stream does not work on the 
+Light Gateway yet.
+
+`subscribe` accepts options that reflect the options provided by Bloxroute, defined by the following interface:
+```js
+export interface StreamOptions {
+    filters?: string,
+    // Default: all
+    include?: Includable[]
+    // Default: false
+    duplicates?: boolean,
+    // Default: true
+    includeFromBlockchain?: boolean,
+    // Default: Mainnet
+    blockchainNetwork?: Network
+}
+```
+
+#### newTxs & pendingTxs
+We can build a filter using the Filter class.
 ```js
 import { Filter } from 'bxgateway';
+
 // Filter for watching all transactions to Uniswap V2 & V3 routers.
 const filter = new Filter()
     .to('0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D').or.to('0xE592427A0AEce92De3Edee1F18E0157C05861564');
 
 gw.on('open', () => {
     gw.subscribe('newTxs', {
-        // Don't forget to build the filter string
+        // Build the filter string
         filters: filter.build(),
 
-        // Include uses the same strings as in the JSON-RPC requests
-        // (tx_hash, tx_contents, header, header.number, ...)
-        include: ['tx_contents', 'tx_hash']
+        // Possible strings for inclusion are defined in type `Includable`
+        include: ['tx_hash', 'tx_contents']
     });
 });
 
 gw.on('message', (msg) => {
-    console.log(msg);
+    doSomething(msg);
 });
 ```
 Example response:
@@ -78,6 +117,7 @@ Example response:
 }
 ```
 ### MEV Services
+To use the MEV services, simply provide the MEV endpoint as an argument to the `CloudGateway`.
 ```js
 const mevGw = new CloudGateway('https://mev.api.blxrbdn.com', {
     authorization: 'YOUR_API_KEY'
@@ -86,7 +126,21 @@ const mevGw = new CloudGateway('https://mev.api.blxrbdn.com', {
 const targetBlock = 12575306;
 
 // Raw transactions can be 0x prefixed or not
-mevGw.simulateBundle(['0xf902ab4d850280bff9a3830...', 'f902ab4d850280bff9a38302d39394e59242...'], targetBlock);
+const sim = await mevGw.simulateBundle(['0xf902ab4d850280bff9a3830...', 'f902ab4d850280bff9a38302d39394e59242...'], targetBlock);
 
-mevGw.submitBundle(['0xf902ab4d850280bff9a3830...', 'f902ab4d850280bff9a38302d39394e59242...'], targetBlock);
+const submission = await mevGw.submitBundle(['0xf902ab4d850280bff9a3830...', 'f902ab4d850280bff9a38302d39394e59242...'], targetBlock);
+```
+Both these methods accept the following optional arguments:
+```js
+type BlockAlias = 'latest' | 'pending';
+
+interface BundleSimulationOptions {
+    stateBlockNumber?: number | BlockAlias,
+    timestamp?: number
+}
+
+interface BundleSubmissionOptions {
+    minTimestamp?: number,
+    maxTimestamp?: number
+}
 ```
