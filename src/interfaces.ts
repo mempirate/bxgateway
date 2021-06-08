@@ -3,7 +3,14 @@ export type Address = string;
 
 export interface StreamOptions {
     filters?: string,
+    // Default: all
     include?: Includable[]
+    // Default: false
+    duplicates?: boolean,
+    // Default: true
+    includeFromBlockchain?: boolean,
+    // Default: Mainnet
+    blockchainNetwork?: Network
 }
 
 export interface Request {
@@ -43,6 +50,8 @@ export interface Transaction {
 }
 
 export type StreamTopic = 'newTxs' | 'pendingTxs' | 'newBlocks';
+
+export type Network = 'Mainnet' | 'BSC-Mainnet'
 
 export interface AuthOptions {
     certPath?: string,
