@@ -12,7 +12,7 @@ different classes. Currently implemented are:
 
 The Python Gateway is not implemented yet, but it will be soon.
 
-### Connecting
+### Getting Started
 #### Light Gateway
 ```js
 import { LightGateway } from 'bxgateway';
@@ -59,7 +59,7 @@ Light Gateway yet.
 
 `subscribe` accepts options that reflect the options provided by Bloxroute, defined by the following interface:
 ```js
-export interface StreamOptions {
+interface StreamOptions {
     filters?: string,
     // Default: all
     include?: Includable[]
@@ -144,3 +144,12 @@ interface BundleSubmissionOptions {
     maxTimestamp?: number
 }
 ```
+
+## Debugging
+To enable debugging, use the `DEBUG` environment variable. Example:
+```
+DEBUG=* npm run test
+```
+
+Example output:
+![debug-output](./docs/debug-output.png)
