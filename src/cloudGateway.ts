@@ -2,9 +2,12 @@ import WebSocket from 'ws';
 import { Agent } from 'https'
 import axios from 'axios';
 import fs from 'fs';
+import { debug as createDebugger } from 'debug';
 
 import BxgatewayBase from './bxgatewayBase';
 import { Response, Request, AuthOptions, BundleSimulationOptions, BundleSubmissionOptions } from './interfaces';
+
+const debug = createDebugger('cloud-gateway');
 
 export class CloudGateway extends BxgatewayBase {
     private _http: boolean = false;
@@ -13,7 +16,7 @@ export class CloudGateway extends BxgatewayBase {
     private readonly _authorizationKey: string;
 
     constructor(url: string, authOpts: AuthOptions) {
-        super();
+        super(debug);
 
         this._url = url;
 
@@ -25,6 +28,7 @@ export class CloudGateway extends BxgatewayBase {
                 this._httpsAgent = new Agent({
                     rejectUnauthorized: false
                 });
+                debug(`HTTP instance created: ${url}`);
                 return;
             }
 
@@ -38,6 +42,7 @@ export class CloudGateway extends BxgatewayBase {
                     rejectUnauthorized: false
                 }
             );
+            debug(`WS instance created: ${url}`);
         } else {
             // Enterprise gateway
             this._gw = new WebSocket(
@@ -48,6 +53,7 @@ export class CloudGateway extends BxgatewayBase {
                     rejectUnauthorized: false
                 }
             );
+            debug(`Connected over wss: ${url}`);
         }
 
         // Pass on
@@ -57,6 +63,7 @@ export class CloudGateway extends BxgatewayBase {
 
         // Modify default messages to be more useful
         this._gw.on('message', (msg: string) => {
+            debug.extend('message')(msg.toString());
             const data: Response = JSON.parse(msg);
             if (data.params) this.emit('message', data.params.result);
             if (data.result) this.emit('message', data.result);
@@ -77,6 +84,8 @@ export class CloudGateway extends BxgatewayBase {
                 timestamp: options?.timestamp
             }
         }
+
+        debug.extend('blxr_simulate_bundle')(JSON.stringify(req));
 
         return (await axios.post(this._url,
             JSON.stringify(req),
@@ -104,6 +113,8 @@ export class CloudGateway extends BxgatewayBase {
                 max_timestamp: options?.maxTimestamp
             }
         }
+
+        debug.extend('blxr_submit_bundle')(JSON.stringify(req));
 
         return (await axios.post(this._url,
             JSON.stringify(req),

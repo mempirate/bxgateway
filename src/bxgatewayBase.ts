@@ -4,6 +4,12 @@ import { StreamOptions, Request, StreamTopic } from './interfaces';
 
 export default class BxgatewayBase extends EventEmitter {
     _gw: WebSocket;
+    _debug: any;
+
+    constructor(dbg: any) {
+        super();
+        this._debug = dbg;
+    }
 
     subscribe(topic: StreamTopic, options?: StreamOptions) {
         if (!this._gw.OPEN) throw new Error('Websocket connection to gateway closed');
@@ -17,6 +23,7 @@ export default class BxgatewayBase extends EventEmitter {
             ]
         };
 
+        this._debug.extend('subscribe')(JSON.stringify(req));
         this._gw.send(JSON.stringify(req));
     }
 
@@ -33,10 +40,12 @@ export default class BxgatewayBase extends EventEmitter {
             }
         }
 
+        this._debug.extend('blxr_tx')(JSON.stringify(req));
         this._gw.send(JSON.stringify(req));
     }
 
     close() {
+        this._debug('close requested');
         this._gw.close();
     }
 }
