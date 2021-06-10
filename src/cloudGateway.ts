@@ -2,12 +2,12 @@ import WebSocket from 'ws';
 import { Agent } from 'https'
 import axios from 'axios';
 import fs from 'fs';
-import { debug as createDebugger } from 'debug';
+import { debug as createDebugger, Debugger } from 'debug';
 
 import BxgatewayBase from './bxgatewayBase';
 import { Response, Request, AuthOptions, BundleSimulationOptions, BundleSubmissionOptions } from './interfaces';
 
-const debug = createDebugger('cloud-gateway');
+const debug: Debugger = createDebugger('cloud-gateway');
 
 export class CloudGateway extends BxgatewayBase {
     private _http: boolean = false;
@@ -53,7 +53,7 @@ export class CloudGateway extends BxgatewayBase {
                     rejectUnauthorized: false
                 }
             );
-            debug(`Connected over wss: ${url}`);
+            debug(`WS instance created: ${url}`);
         }
 
         // Pass on

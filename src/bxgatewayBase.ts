@@ -1,12 +1,14 @@
 import WebSocket from 'ws';
 import { EventEmitter } from 'events';
 import { StreamOptions, Request, StreamTopic } from './interfaces';
+import { Debugger } from 'debug';
 
 export default class BxgatewayBase extends EventEmitter {
     _gw: WebSocket;
-    _debug: any;
 
-    constructor(dbg: any) {
+    private readonly _debug: Debugger;
+
+    constructor(dbg: Debugger) {
         super();
         this._debug = dbg;
     }
