@@ -1,11 +1,11 @@
 import WebSocket from 'ws';
 import { Agent } from 'https'
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import fs from 'fs';
 import { debug as createDebugger, Debugger } from 'debug';
 
 import BxgatewayBase from './bxgatewayBase';
-import { Response, Request, AuthOptions, BundleSimulationOptions, BundleSubmissionOptions } from './interfaces';
+import { Response, Request, AuthOptions, BundleSimulationOptions, BundleSubmissionOptions, BundleError } from './interfaces';
 
 const debug: Debugger = createDebugger('cloud-gateway');
 
@@ -87,16 +87,28 @@ export class CloudGateway extends BxgatewayBase {
 
         debug.extend('blxr_simulate_bundle')(JSON.stringify(req));
 
-        return (await axios.post(this._url,
-            JSON.stringify(req),
-            {
-                headers: {
-                    'Authorization': this._authorizationKey,
-                    'Content-Type': 'application/json'
-                },
-                httpsAgent: this._httpsAgent,
-            }
-        )).data;
+        try {
+            return (await axios.post(this._url,
+                JSON.stringify(req),
+                {
+                    headers: {
+                        'Authorization': this._authorizationKey,
+                        'Content-Type': 'application/json'
+                    },
+                    httpsAgent: this._httpsAgent,
+                }
+            )).data;
+        } catch (err) {
+            throw {
+                status: err.response.status,
+                statusText: err.response.statusText,
+                url: err.config.url,
+                method: err.config.method,
+                data: err.config.data,
+                headers: err.config.headers,
+                error: err.response.data.error
+            } as BundleError;
+        }
     }
 
     async submitBundle(bundle: string[], blockNumber: number, options?: BundleSubmissionOptions): Promise<any> {
@@ -116,15 +128,27 @@ export class CloudGateway extends BxgatewayBase {
 
         debug.extend('blxr_submit_bundle')(JSON.stringify(req));
 
-        return (await axios.post(this._url,
-            JSON.stringify(req),
-            {
-                headers: {
-                    'Authorization': this._authorizationKey,
-                    'Content-Type': 'application/json'
-                },
-                httpsAgent: this._httpsAgent,
-            }
-        )).data;
+        try {
+            return (await axios.post(this._url,
+                JSON.stringify(req),
+                {
+                    headers: {
+                        'Authorization': this._authorizationKey,
+                        'Content-Type': 'application/json'
+                    },
+                    httpsAgent: this._httpsAgent,
+                }
+            )).data;
+        } catch (err) {
+            throw {
+                status: err.response.status,
+                statusText: err.response.statusText,
+                url: err.config.url,
+                method: err.config.method,
+                data: err.config.data,
+                headers: err.config.headers,
+                error: err.response.data.error
+            } as BundleError;
+        }
     }
 }

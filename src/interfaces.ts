@@ -82,3 +82,22 @@ export interface BundleSubmissionOptions {
     minTimestamp?: number,
     maxTimestamp?: number
 }
+
+export interface BundleError {
+    status: number,
+    statusText: string,
+    url: string,
+    method: string,
+    data: string,
+    headers: {
+        'Accept': string,
+        'Content-Type': string,
+        'Authorization': string,
+        'User-Agent': string,
+        'Content-Length': number,
+    },
+    error: {
+        code: number,
+        message: string,
+    },
+}
