@@ -7,20 +7,32 @@ export class Filter {
         return this._filter;
     }
 
-    to(address: string) {
-        this._filter += `({to} == '${address}')`;
+    to(address: string, eq: boolean = true) {
+        if (eq) {
+            this._filter += `({to} == '${address}')`;
+        } else {
+            this._filter += `({to} IN ${address})`;
+        }
         this._valid = true;
         return this;
     }
 
-    from(address: string) {
-        this._filter += `({from} == '${address}')`;
+    from(address: string, eq: boolean = true) {
+        if (eq) {
+            this._filter += `({from} == '${address}')`;
+        } else {
+            this._filter += `({from} IN ${address})`;
+        }
         this._valid = true;
         return this;
     }
 
-    method(methodId: string) {
-        this._filter += `({methodId} == '${methodId}')`;
+    method(methodId: string, eq: boolean = true) {
+        if (eq) {
+            this._filter += `({method_id} == '${methodId}')`;
+        } else {
+            this._filter += `({method_id} IN ${methodId})`;
+        }
         this._valid = true;
         return this;
     }
