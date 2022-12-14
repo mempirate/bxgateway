@@ -98,7 +98,7 @@ export class CloudGateway extends BxgatewayBase {
                     httpsAgent: this._httpsAgent,
                 }
             )).data;
-        } catch (err) {
+        } catch (err: any) {
             throw {
                 status: err.response.status,
                 statusText: err.response.statusText,
@@ -139,7 +139,7 @@ export class CloudGateway extends BxgatewayBase {
                     httpsAgent: this._httpsAgent,
                 }
             )).data;
-        } catch (err) {
+        } catch (err: any) {
             throw {
                 status: err.response.status,
                 statusText: err.response.statusText,
