@@ -122,7 +122,8 @@ export class CloudGateway extends BxgatewayBase {
                 transaction: bundle,
                 block_number: '0x' + blockNumber.toString(16),
                 min_timestamp: options?.minTimestamp,
-                max_timestamp: options?.maxTimestamp
+                max_timestamp: options?.maxTimestamp,
+                mev_builders: options?.mevBuilders,
             }
         }
 
