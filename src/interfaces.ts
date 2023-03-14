@@ -81,7 +81,7 @@ export interface BundleSimulationOptions {
 export interface BundleSubmissionOptions {
     minTimestamp?: number,
     maxTimestamp?: number,
-    mevBuilders?: string,
+    mevBuilders?: object,
 }
 
 export interface BundleError {
