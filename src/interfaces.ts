@@ -82,6 +82,8 @@ export interface BundleSubmissionOptions {
     minTimestamp?: number,
     maxTimestamp?: number,
     mevBuilders?: object,
+    enableBackrunme?: boolean,
+    frontrunning?: boolean,
 }
 
 export interface BundleError {
