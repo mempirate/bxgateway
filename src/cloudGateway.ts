@@ -124,6 +124,8 @@ export class CloudGateway extends BxgatewayBase {
                 min_timestamp: options?.minTimestamp,
                 max_timestamp: options?.maxTimestamp,
                 mev_builders: options?.mevBuilders,
+                enable_backrunme: options?.enableBackrunme,
+                frontrunning: options?.frontrunning,
             }
         }
 
